@@ -1680,5 +1680,32 @@ function injectStyles() {
 /* =========================================================
    START
    ========================================================= */
+const TECHPULSE_API =
+    "https://uwqxsb2snf.execute-api.us-east-1.amazonaws.com";
 
-renderEdition(demoEdition);
+
+async function loadLatestEdition() {
+
+    try {
+
+        const response = await fetch(TECHPULSE_API);
+
+        if (!response.ok) {
+            throw new Error("API request failed");
+        }
+
+        const edition = await response.text();
+
+        renderEdition(edition);
+
+    } catch (error) {
+
+        console.error("TECHPULSE API Error:", error);
+
+        renderEdition(demoEdition);
+
+    }
+
+}
+
+loadLatestEdition();
