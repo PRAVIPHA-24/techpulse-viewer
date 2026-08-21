@@ -1,0 +1,534 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg-1: #080b1a;
+    --bg-2: #11152d;
+    --bg-3: #21133d;
+
+    --panel: rgba(18, 22, 45, 0.78);
+    --panel-light: rgba(35, 40, 75, 0.7);
+
+    --text: #f7f7ff;
+    --muted: #a5aac2;
+    --line: rgba(255, 255, 255, 0.1);
+
+    --purple: #9b6cff;
+    --blue: #4da6ff;
+    --pink: #e879f9;
+}
+
+/* ============================= */
+/* BODY */
+/* ============================= */
+
+body {
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    color: var(--text);
+
+    line-height: 1.75;
+
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at 15% 15%,
+            rgba(77, 166, 255, 0.20),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 85% 10%,
+            rgba(155, 108, 255, 0.24),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 50% 90%,
+            rgba(232, 121, 249, 0.12),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            var(--bg-1),
+            var(--bg-2),
+            var(--bg-3)
+        );
+
+    background-attachment: fixed;
+}
+
+/* ============================= */
+/* CONTAINER */
+/* ============================= */
+
+.container {
+    width: min(1000px, 92%);
+
+    margin: 0 auto;
+
+    padding: 55px 0 70px;
+}
+
+/* ============================= */
+/* HEADER */
+/* ============================= */
+
+header {
+    text-align: center;
+
+    margin-bottom: 55px;
+}
+
+.brand {
+    font-size: 35px;
+
+    font-weight: 900;
+
+    letter-spacing: 7px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffffff,
+            #b9a2ff,
+            #72b7ff,
+            #ffffff
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    background-size: 200% auto;
+
+    animation: shimmer 7s linear infinite;
+}
+
+@keyframes shimmer {
+
+    to {
+        background-position: 200% center;
+    }
+}
+
+.tagline {
+    margin-top: 10px;
+
+    color: var(--muted);
+
+    font-size: 14px;
+
+    letter-spacing: 0.5px;
+}
+
+/* ============================= */
+/* HERO */
+/* ============================= */
+
+.hero {
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 55px;
+
+    margin-bottom: 24px;
+
+    border-radius: 28px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(77, 166, 255, 0.14),
+            rgba(155, 108, 255, 0.18),
+            rgba(232, 121, 249, 0.08)
+        ),
+        rgba(15, 18, 38, 0.82);
+
+    backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.35),
+        0 0 80px rgba(115, 90, 255, 0.08);
+}
+
+.hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 300px;
+    height: 300px;
+
+    right: -120px;
+    top: -150px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(77, 166, 255, 0.35),
+            transparent 65%
+        );
+
+    filter: blur(10px);
+}
+
+.hero::after {
+    content: "";
+
+    position: absolute;
+
+    width: 250px;
+    height: 250px;
+
+    left: -130px;
+    bottom: -150px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(232, 121, 249, 0.22),
+            transparent 65%
+        );
+
+    filter: blur(15px);
+}
+
+.label {
+    position: relative;
+
+    z-index: 2;
+
+    display: inline-block;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 2.5px;
+
+    color: #bda9ff;
+
+    margin-bottom: 18px;
+}
+
+.hero h1 {
+    position: relative;
+
+    z-index: 2;
+
+    font-size: clamp(44px, 7vw, 74px);
+
+    line-height: 1.05;
+
+    letter-spacing: -2px;
+
+    margin-bottom: 18px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffffff,
+            #bca6ff,
+            #79baff
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+}
+
+#generated {
+    position: relative;
+
+    z-index: 2;
+
+    color: var(--muted);
+
+    font-size: 14px;
+}
+
+/* ============================= */
+/* CONTENT */
+/* ============================= */
+
+article {
+    padding: 50px;
+
+    border-radius: 28px;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(26, 30, 60, 0.82),
+            rgba(14, 17, 35, 0.82)
+        );
+
+    backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================= */
+/* SECTIONS */
+/* ============================= */
+
+.section {
+    position: relative;
+
+    margin-bottom: 48px;
+
+    padding-bottom: 42px;
+
+    border-bottom:
+        1px solid var(--line);
+}
+
+.section:last-child {
+    margin-bottom: 0;
+
+    padding-bottom: 0;
+
+    border-bottom: none;
+}
+
+/* ============================= */
+/* SECTION TITLE */
+/* ============================= */
+
+.section h2 {
+    font-size: 25px;
+
+    line-height: 1.2;
+
+    letter-spacing: -0.4px;
+
+    margin-bottom: 9px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffffff,
+            #b8a5ff
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+}
+
+/* ============================= */
+/* QUESTION */
+/* ============================= */
+
+.question {
+    display: inline-block;
+
+    color: #b7bdd0;
+
+    font-size: 15px;
+
+    font-style: italic;
+
+    margin-bottom: 20px;
+
+    padding-left: 14px;
+
+    border-left: 2px solid var(--purple);
+}
+
+/* ============================= */
+/* PARAGRAPHS */
+/* ============================= */
+
+.section p {
+    color: #d0d4e1;
+
+    font-size: 16px;
+
+    margin-bottom: 14px;
+}
+
+.section p:last-child {
+    margin-bottom: 0;
+}
+
+/* ============================= */
+/* LIST */
+/* ============================= */
+
+.section ol {
+    padding-left: 24px;
+
+    margin-top: 10px;
+}
+
+.section li {
+    color: #d0d4e1;
+
+    padding-left: 8px;
+
+    margin-bottom: 9px;
+}
+
+.section li::marker {
+    color: var(--purple);
+
+    font-weight: 700;
+}
+
+/* ============================= */
+/* CONNECTION */
+/* ============================= */
+
+.connection {
+    text-align: center;
+
+    color: #b69cff;
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+    margin: 10px 0;
+}
+
+/* ============================= */
+/* STRONG */
+/* ============================= */
+
+strong {
+    color: #ffffff;
+
+    font-weight: 700;
+}
+
+/* ============================= */
+/* LOADING */
+/* ============================= */
+
+.loading {
+    text-align: center;
+
+    color: var(--muted);
+
+    padding: 60px 20px;
+}
+
+/* ============================= */
+/* FOOTER */
+/* ============================= */
+
+footer {
+    text-align: center;
+
+    padding: 35px 0 10px;
+
+    color: #747b92;
+
+    font-size: 13px;
+}
+
+#status {
+    margin-top: 8px;
+
+    color: #a994ff;
+
+    font-size: 12px;
+}
+
+/* ============================= */
+/* SCROLLBAR */
+/* ============================= */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #080b1a;
+}
+
+::-webkit-scrollbar-thumb {
+    background:
+        linear-gradient(
+            180deg,
+            #7357d8,
+            #4388d9
+        );
+
+    border-radius: 20px;
+}
+
+/* ============================= */
+/* MOBILE */
+/* ============================= */
+
+@media (max-width: 700px) {
+
+    .container {
+        width: 94%;
+
+        padding: 35px 0 50px;
+    }
+
+    header {
+        margin-bottom: 35px;
+    }
+
+    .brand {
+        font-size: 28px;
+
+        letter-spacing: 5px;
+    }
+
+    .tagline {
+        font-size: 13px;
+    }
+
+    .hero {
+        padding: 35px 28px;
+
+        border-radius: 22px;
+    }
+
+    .hero h1 {
+        font-size: 46px;
+    }
+
+    article {
+        padding: 32px 25px;
+
+        border-radius: 22px;
+    }
+
+    .section h2 {
+        font-size: 22px;
+    }
+
+    .section p,
+    .section li {
+        font-size: 15px;
+    }
+}
