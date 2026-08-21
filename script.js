@@ -1,189 +1,394 @@
-const API_URL =
-    "https://uwqxsb2snf.execute-api.us-east-1.amazonaws.com";
+const demoEdition = `
+# RISC-V
 
-async function loadEdition() {
+## THE IDEA
 
-    const technology = document.getElementById("technology");
-    const generated = document.getElementById("generated");
-    const content = document.getElementById("content");
-    const status = document.getElementById("status");
+### What is this, really?
 
-    try {
+RISC-V is a free, open-source instruction set architecture (ISA) based on the RISC (Reduced Instruction Set Computing) principles. Unlike proprietary ISAs like x86 or ARM, RISC-V is designed to be openly accessible, allowing anyone to use, modify, and distribute it without licensing fees. This open nature makes RISC-V particularly attractive for educational purposes and custom applications.
 
-        status.textContent = "Fetching latest edition...";
+## THE PROBLEM
 
-        const response = await fetch(API_URL);
+### Why was this needed?
 
-        if (!response.ok) {
-            throw new Error(`API returned ${response.status}`);
-        }
+Historically, many powerful ISAs were proprietary, controlled by a few companies. This led to high licensing costs and limited flexibility for developers and manufacturers. The proprietary nature also made it difficult for startups and academic institutions to innovate without significant financial barriers. RISC-V was developed to provide a cost-effective, flexible, and open alternative, allowing more freedom and innovation in the tech industry.
 
-        const text = await response.text();
+## HOW IT WORKS
 
-        if (!text.trim()) {
-            throw new Error("Empty edition received");
-        }
+### What makes it tick?
 
-        renderEdition(text);
+1. Instruction Fetch: The CPU fetches an instruction from memory.
+2. Decode: The instruction is decoded to determine the operation to be performed.
+3. Execute: The operation is carried out by the appropriate unit in the CPU.
+4. Memory Access: If the instruction requires data from memory, this step accesses the memory.
+5. Write Back: The result is written back to a register or memory.
 
-        status.textContent =
-            "● Live • Latest edition loaded";
+RISC-V supports various extensions for specialized tasks, such as floating-point operations, atomic operations, and more, making it highly adaptable.
 
-    } catch (error) {
+## WHY IT MATTERS
 
-        console.error(error);
+### What changes because of this technology?
 
-        technology.textContent = "Unable to load";
+RISC-V's open nature democratizes access to advanced computing architectures, allowing smaller companies, startups, and educational institutions to develop custom processors without the need for expensive licenses.
 
-        generated.textContent =
-            "Could not connect to TECHPULSE";
+## WHERE IT IS USED
 
-        content.innerHTML = `
-            <div class="loading">
-                <strong>Connection problem</strong>
-                <p>${error.message}</p>
-                <p>Check the API Gateway connection and try again.</p>
-            </div>
-        `;
+### Real-world applications
 
-        status.textContent =
-            "Connection failed";
-    }
-}
+- Embedded Systems
+- High-Performance Computing
+- Educational Purposes
+- Automotive Industry
 
+## CONNECT THE DOTS
+
+### How does it connect?
+
+RISC-V
+↓
+Open-source hardware
+↓
+Custom processor design
+↓
+IoT devices
+
+## ENGINEERING INSIGHT
+
+### One deeper insight
+
+One often overlooked aspect of RISC-V is its modular design. The base ISA is simple and can be extended with optional features, such as floating-point units or cryptographic extensions.
+
+## THINK ABOUT IT
+
+### The question to carry forward
+
+Considering the open and customizable nature of RISC-V, how might the future landscape of hardware development change as more industries adopt this architecture?
+`;
+
+
+/* =========================================================
+   TECHPULSE ENGINE
+   ========================================================= */
 
 function renderEdition(text) {
 
     const lines = text.split("\n");
 
-    let html = "";
+    let technology = "TECHNOLOGY";
+    let generatedDate = "";
+    let sections = [];
+
     let currentSection = null;
-    let question = "";
-    let content = [];
+    let currentQuestion = "";
+    let currentContent = [];
 
-    // Extract technology
-    const technologyMatch =
-        text.match(/Technology:\s*(.+)/);
-
-    if (technologyMatch) {
-
-        document.getElementById("technology").textContent =
-            technologyMatch[1].trim();
-    }
-
-
-    // Extract generated time
-    const generatedMatch =
-        text.match(/Generated:\s*(.+)/);
-
-    if (generatedMatch) {
-
-        document.getElementById("generated").textContent =
-            `Generated ${generatedMatch[1].trim()}`;
-    }
-
-
-    function closeSection() {
+    function saveSection() {
 
         if (!currentSection) return;
 
-        html += `
-            <section class="section">
-
-                <h2>${currentSection}</h2>
-
-                ${
-                    question
-                        ? `<div class="question">${question}</div>`
-                        : ""
-                }
-
-                <div>
-                    ${formatContent(content)}
-                </div>
-
-            </section>
-        `;
+        sections.push({
+            title: currentSection,
+            question: currentQuestion,
+            content: [...currentContent]
+        });
 
         currentSection = null;
-        question = "";
-        content = [];
+        currentQuestion = "";
+        currentContent = [];
+    }
+
+    lines.forEach(rawLine => {
+
+        const line = rawLine.trim();
+
+        if (!line) return;
+
+        /* MAIN TECHNOLOGY */
+
+        if (
+            line.startsWith("# ") &&
+            !line.startsWith("## ")
+        ) {
+
+            technology = line.substring(2).trim();
+
+            return;
+        }
+
+        /* SECTION */
+
+        if (line.startsWith("## ")) {
+
+            saveSection();
+
+            currentSection = line.substring(3).trim();
+
+            return;
+        }
+
+        /* SUB QUESTION */
+
+        if (line.startsWith("### ")) {
+
+            currentQuestion = line.substring(4).trim();
+
+            return;
+        }
+
+        /* OLD QUESTION FORMAT */
+
+        if (
+            line.startsWith('"') &&
+            line.endsWith('"')
+        ) {
+
+            currentQuestion =
+                line.substring(1, line.length - 1);
+
+            return;
+        }
+
+        if (currentSection) {
+
+            currentContent.push(line);
+
+        }
+
+    });
+
+    saveSection();
+
+
+    /* =====================================================
+       HERO
+       ===================================================== */
+
+    const technologyElement =
+        document.getElementById("technology");
+
+    if (technologyElement) {
+
+        technologyElement.textContent = technology;
+
     }
 
 
-    function formatContent(lines) {
+    /* =====================================================
+       GENERATED TEXT
+       ===================================================== */
 
-        let result = "";
-        let listItems = [];
+    const generatedElement =
+        document.getElementById("generated");
 
-        function closeList() {
+    if (generatedElement) {
 
-            if (listItems.length === 0) return;
+        generatedElement.innerHTML =
+            `<span class="pulse-dot"></span>
+             Autonomous edition generated by TECHPULSE`;
 
-            result += "<ol>";
+    }
 
-            listItems.forEach(item => {
 
-                result += `<li>${item}</li>`;
+    /* =====================================================
+       BUILD CONTENT
+       ===================================================== */
 
-            });
+    let html = "";
 
-            result += "</ol>";
+    sections.forEach((section, index) => {
 
-            listItems = [];
+        const icon = getSectionIcon(section.title);
+
+        const number =
+            String(index + 1).padStart(2, "0");
+
+        html += `
+
+        <section class="tp-section"
+                 style="animation-delay:${index * 80}ms">
+
+            <div class="section-number">
+                ${number}
+            </div>
+
+            <div class="section-main">
+
+                <div class="section-heading">
+
+                    <span class="section-icon">
+                        ${icon}
+                    </span>
+
+                    <div>
+
+                        <div class="section-label">
+                            ${section.title}
+                        </div>
+
+                        ${
+                            section.question
+                            ?
+                            `<div class="section-question">
+                                ${escapeHTML(section.question)}
+                            </div>`
+                            :
+                            ""
+                        }
+
+                    </div>
+
+                </div>
+
+                <div class="section-content">
+
+                    ${formatContent(section.content)}
+
+                </div>
+
+            </div>
+
+        </section>
+
+        `;
+
+    });
+
+
+    /* =====================================================
+       CONTENT OUTPUT
+       ===================================================== */
+
+    const contentElement =
+        document.getElementById("content");
+
+    if (contentElement) {
+
+        contentElement.innerHTML = `
+
+            <div class="edition-intro">
+
+                <div class="live-badge">
+                    <span></span>
+                    LIVE EDITION
+                </div>
+
+                <p>
+                    Your autonomous technology briefing
+                </p>
+
+            </div>
+
+            <div class="timeline">
+
+                ${html}
+
+            </div>
+
+            <div class="end-card">
+
+                <div class="end-orb"></div>
+
+                <div>
+
+                    <span class="end-label">
+                        END OF EDITION
+                    </span>
+
+                    <h3>
+                        Keep the pulse going.
+                    </h3>
+
+                    <p>
+                        A new technology story can be waiting for you next.
+                    </p>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =====================================================
+       STATUS
+       ===================================================== */
+
+    const statusElement =
+        document.getElementById("status");
+
+    if (statusElement) {
+
+        statusElement.innerHTML =
+            `<span class="status-live"></span>
+             Autonomous system online`;
+
+    }
+
+
+    /* =====================================================
+       UPDATE PAGE TITLE
+       ===================================================== */
+
+    document.title =
+        `TECHPULSE — ${technology}`;
+
+
+    /* =====================================================
+       ADD DYNAMIC STYLES
+       ===================================================== */
+
+    injectStyles();
+
+}
+
+
+/* =========================================================
+   FORMAT CONTENT
+   ========================================================= */
+
+function formatContent(lines) {
+
+    let html = "";
+
+    let listItems = [];
+    let listType = null;
+
+
+    function closeList() {
+
+        if (!listItems.length) return;
+
+        if (listType === "ordered") {
+
+            html += `
+                <ol class="tp-list">
+                    ${listItems
+                        .map(item =>
+                            `<li>${escapeHTML(item)}</li>`
+                        )
+                        .join("")}
+                </ol>
+            `;
+
+        } else {
+
+            html += `
+                <ul class="tp-list">
+                    ${listItems
+                        .map(item =>
+                            `<li>${escapeHTML(item)}</li>`
+                        )
+                        .join("")}
+                </ul>
+            `;
+
         }
 
+        listItems = [];
+        listType = null;
 
-        lines.forEach(line => {
-
-            const trimmed = line.trim();
-
-            if (!trimmed) return;
-
-
-            // Numbered list
-            if (/^\d+\.\s/.test(trimmed)) {
-
-                listItems.push(
-                    trimmed.replace(/^\d+\.\s/, "")
-                );
-
-                return;
-            }
-
-
-            closeList();
-
-
-            // Connection arrows
-            if (
-                trimmed === "↓" ||
-                trimmed === "→"
-            ) {
-
-                result +=
-                    `<div class="connection">${trimmed}</div>`;
-
-                return;
-            }
-
-
-            // Markdown bold
-            const formatted =
-                trimmed.replace(
-                    /\*\*(.*?)\*\*/g,
-                    "<strong>$1</strong>"
-                );
-
-
-            result += `<p>${formatted}</p>`;
-
-        });
-
-
-        closeList();
-
-        return result;
     }
 
 
@@ -191,60 +396,1289 @@ function renderEdition(text) {
 
         const trimmed = line.trim();
 
+        if (!trimmed) return;
 
-        // Main title
+
+        /* NUMBERED LIST */
+
+        if (/^\d+\.\s/.test(trimmed)) {
+
+            if (listType !== "ordered") {
+
+                closeList();
+
+                listType = "ordered";
+
+            }
+
+            listItems.push(
+                trimmed.replace(/^\d+\.\s/, "")
+            );
+
+            return;
+
+        }
+
+
+        /* BULLET LIST */
+
+        if (/^[-*]\s/.test(trimmed)) {
+
+            if (listType !== "unordered") {
+
+                closeList();
+
+                listType = "unordered";
+
+            }
+
+            listItems.push(
+                trimmed.replace(/^[-*]\s/, "")
+            );
+
+            return;
+
+        }
+
+
+        closeList();
+
+
+        /* ARROW */
+
         if (
-            trimmed.startsWith("# ") &&
-            !trimmed.startsWith("## ")
+            trimmed === "↓" ||
+            trimmed === "→"
         ) {
 
-            document.getElementById("technology").textContent =
-                trimmed.substring(2);
+            html += `
+                <div class="connection-arrow">
+                    ${trimmed}
+                </div>
+            `;
 
             return;
+
         }
 
 
-        // Section
-        if (trimmed.startsWith("## ")) {
+        /* CONNECT THE DOTS */
 
-            closeSection();
-
-            currentSection =
-                trimmed.substring(3);
-
-            return;
-        }
-
-
-        // Question
         if (
-            trimmed.startsWith('"') &&
-            trimmed.endsWith('"')
+            trimmed.length < 100 &&
+            (
+                trimmed.includes("↓") ||
+                trimmed.includes("→")
+            )
         ) {
 
-            question = trimmed;
+            html += `
+                <div class="connection-line">
+                    ${escapeHTML(trimmed)}
+                </div>
+            `;
 
             return;
-        }
-
-
-        if (currentSection) {
-
-            content.push(trimmed);
 
         }
+
+
+        /* NORMAL PARAGRAPH */
+
+        html += `
+            <p>
+                ${formatInline(trimmed)}
+            </p>
+        `;
 
     });
 
 
-    closeSection();
+    closeList();
 
+    return html;
 
-    document.getElementById("content").innerHTML =
-        html;
 }
 
 
-// Start TECHPULSE
-loadEdition();
+/* =========================================================
+   INLINE FORMATTING
+   ========================================================= */
+
+function formatInline(text) {
+
+    let safe = escapeHTML(text);
+
+    safe = safe.replace(
+        /\*\*(.*?)\*\*/g,
+        "<strong>$1</strong>"
+    );
+
+    safe = safe.replace(
+        /`(.*?)`/g,
+        `<code>$1</code>`
+    );
+
+    return safe;
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+function escapeHTML(text) {
+
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================================
+   SECTION ICONS
+   ========================================================= */
+
+function getSectionIcon(title) {
+
+    const value =
+        title.toLowerCase();
+
+    if (value.includes("idea"))
+        return "✦";
+
+    if (value.includes("problem"))
+        return "◈";
+
+    if (
+        value.includes("work") ||
+        value.includes("tick")
+    )
+        return "⌘";
+
+    if (value.includes("matter"))
+        return "↗";
+
+    if (
+        value.includes("used") ||
+        value.includes("application")
+    )
+        return "◎";
+
+    if (value.includes("connect"))
+        return "⟡";
+
+    if (value.includes("insight"))
+        return "◉";
+
+    if (value.includes("think"))
+        return "∞";
+
+    return "◆";
+
+}
+
+
+/* =========================================================
+   DYNAMIC DESIGN SYSTEM
+   ========================================================= */
+
+function injectStyles() {
+
+    if (document.getElementById("techpulse-engine-style"))
+        return;
+
+
+    const style =
+        document.createElement("style");
+
+    style.id =
+        "techpulse-engine-style";
+
+
+    style.innerHTML = `
+
+    /* ===============================================
+       GLOBAL
+       =============================================== */
+
+    body {
+
+        background:
+            radial-gradient(
+                circle at 10% 10%,
+                rgba(99,102,241,.14),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 90% 20%,
+                rgba(168,85,247,.12),
+                transparent 30%
+            ),
+            linear-gradient(
+                135deg,
+                #070b16,
+                #0b1020 45%,
+                #080c18
+            );
+
+        color: #e8ecf7;
+
+        min-height: 100vh;
+
+    }
+
+
+    .container {
+
+        max-width: 1100px;
+
+        padding:
+            55px 0 100px;
+
+    }
+
+
+    /* ===============================================
+       HEADER
+       =============================================== */
+
+    header {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        margin-bottom: 70px;
+
+        padding:
+            0 5px;
+
+    }
+
+
+    .brand {
+
+        font-size: 20px;
+
+        letter-spacing: 5px;
+
+        color: #ffffff;
+
+        position: relative;
+
+    }
+
+
+    .brand::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 7px;
+
+        height: 7px;
+
+        border-radius: 50%;
+
+        background: #8b5cf6;
+
+        right: -16px;
+
+        top: 5px;
+
+        box-shadow:
+            0 0 15px #8b5cf6;
+
+    }
+
+
+    .tagline {
+
+        color: #7f8aa3;
+
+        font-size: 13px;
+
+        letter-spacing: .5px;
+
+    }
+
+
+    /* ===============================================
+       HERO
+       =============================================== */
+
+    .hero {
+
+        position: relative;
+
+        overflow: hidden;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(255,255,255,.08),
+                rgba(255,255,255,.025)
+            );
+
+        border:
+            1px solid rgba(255,255,255,.1);
+
+        border-radius: 30px;
+
+        padding:
+            65px;
+
+        margin-bottom: 22px;
+
+        box-shadow:
+            0 30px 100px rgba(0,0,0,.35);
+
+        backdrop-filter:
+            blur(20px);
+
+    }
+
+
+    .hero::before {
+
+        content: "";
+
+        position: absolute;
+
+        width: 400px;
+
+        height: 400px;
+
+        border-radius: 50%;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(124,58,237,.24),
+                transparent 65%
+            );
+
+        right: -100px;
+
+        top: -150px;
+
+        pointer-events: none;
+
+    }
+
+
+    .hero::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 250px;
+
+        height: 250px;
+
+        border-radius: 50%;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(59,130,246,.16),
+                transparent 70%
+            );
+
+        left: -100px;
+
+        bottom: -120px;
+
+        pointer-events: none;
+
+    }
+
+
+    .label {
+
+        position: relative;
+
+        z-index: 2;
+
+        color: #a78bfa;
+
+        letter-spacing: 3px;
+
+        font-size: 11px;
+
+        font-weight: 800;
+
+    }
+
+
+    .hero h1 {
+
+        position: relative;
+
+        z-index: 2;
+
+        font-size:
+            clamp(55px, 9vw, 105px);
+
+        letter-spacing:
+            -5px;
+
+        line-height:
+            .95;
+
+        margin:
+            20px 0;
+
+        background:
+            linear-gradient(
+                120deg,
+                #ffffff,
+                #b9a7ff 45%,
+                #79c8ff
+            );
+
+        -webkit-background-clip:
+            text;
+
+        background-clip:
+            text;
+
+        color:
+            transparent;
+
+    }
+
+
+    #generated {
+
+        position: relative;
+
+        z-index: 2;
+
+        color: #8994aa;
+
+        font-size: 14px;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 9px;
+
+    }
+
+
+    .pulse-dot {
+
+        width: 7px;
+
+        height: 7px;
+
+        background: #8b5cf6;
+
+        border-radius: 50%;
+
+        box-shadow:
+            0 0 12px #8b5cf6;
+
+        animation:
+            pulse 1.7s infinite;
+
+    }
+
+
+    @keyframes pulse {
+
+        0%,100% {
+            opacity: .4;
+            transform: scale(.8);
+        }
+
+        50% {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+    }
+
+
+    /* ===============================================
+       ARTICLE
+       =============================================== */
+
+    article {
+
+        background:
+            rgba(255,255,255,.025);
+
+        border:
+            1px solid rgba(255,255,255,.08);
+
+        border-radius: 30px;
+
+        padding:
+            35px;
+
+        box-shadow:
+            0 25px 80px rgba(0,0,0,.25);
+
+        backdrop-filter:
+            blur(20px);
+
+    }
+
+
+    .edition-intro {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        padding:
+            5px 10px 30px;
+
+        color: #7f8aa3;
+
+        font-size: 13px;
+
+    }
+
+
+    .live-badge {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        border:
+            1px solid rgba(139,92,246,.25);
+
+        background:
+            rgba(139,92,246,.08);
+
+        color:
+            #b9a7ff;
+
+        padding:
+            8px 12px;
+
+        border-radius: 100px;
+
+        font-size: 10px;
+
+        font-weight: 800;
+
+        letter-spacing: 1.5px;
+
+    }
+
+
+    .live-badge span {
+
+        width: 6px;
+
+        height: 6px;
+
+        background: #a78bfa;
+
+        border-radius: 50%;
+
+        box-shadow:
+            0 0 10px #a78bfa;
+
+    }
+
+
+    /* ===============================================
+       SECTIONS
+       =============================================== */
+
+    .timeline {
+
+        position: relative;
+
+    }
+
+
+    .timeline::before {
+
+        content: "";
+
+        position: absolute;
+
+        left: 42px;
+
+        top: 0;
+
+        bottom: 0;
+
+        width: 1px;
+
+        background:
+            linear-gradient(
+                transparent,
+                rgba(139,92,246,.35),
+                rgba(96,165,250,.25),
+                transparent
+            );
+
+    }
+
+
+    .tp-section {
+
+        position: relative;
+
+        display: grid;
+
+        grid-template-columns:
+            70px 1fr;
+
+        gap: 22px;
+
+        padding:
+            30px 20px;
+
+        margin-bottom: 8px;
+
+        opacity: 0;
+
+        transform:
+            translateY(18px);
+
+        animation:
+            sectionReveal .7s forwards;
+
+    }
+
+
+    @keyframes sectionReveal {
+
+        to {
+
+            opacity: 1;
+
+            transform:
+                translateY(0);
+
+        }
+
+    }
+
+
+    .section-number {
+
+        position: relative;
+
+        z-index: 2;
+
+        width: 45px;
+
+        height: 45px;
+
+        border-radius: 15px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        background:
+            #0e1425;
+
+        border:
+            1px solid rgba(255,255,255,.09);
+
+        color:
+            #65708a;
+
+        font-size: 11px;
+
+        font-weight: 800;
+
+    }
+
+
+    .section-main {
+
+        padding-bottom: 25px;
+
+        border-bottom:
+            1px solid rgba(255,255,255,.06);
+
+    }
+
+
+    .section-heading {
+
+        display: flex;
+
+        gap: 16px;
+
+        align-items: flex-start;
+
+        margin-bottom: 22px;
+
+    }
+
+
+    .section-icon {
+
+        width: 40px;
+
+        height: 40px;
+
+        flex-shrink: 0;
+
+        border-radius: 13px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(139,92,246,.18),
+                rgba(59,130,246,.08)
+            );
+
+        border:
+            1px solid rgba(139,92,246,.18);
+
+        color:
+            #b9a7ff;
+
+        font-size: 17px;
+
+    }
+
+
+    .section-label {
+
+        font-size: 22px;
+
+        font-weight: 800;
+
+        letter-spacing: -.5px;
+
+        color: #f1f3f9;
+
+    }
+
+
+    .section-question {
+
+        margin-top: 4px;
+
+        color: #8b96ab;
+
+        font-size: 13px;
+
+        font-style: italic;
+
+    }
+
+
+    .section-content {
+
+        color: #aeb7c8;
+
+        font-size: 15px;
+
+        line-height: 1.85;
+
+        max-width: 780px;
+
+    }
+
+
+    .section-content p {
+
+        margin-bottom: 15px;
+
+    }
+
+
+    .section-content p:last-child {
+
+        margin-bottom: 0;
+
+    }
+
+
+    .section-content strong {
+
+        color: #e5e7ef;
+
+    }
+
+
+    /* ===============================================
+       LISTS
+       =============================================== */
+
+    .tp-list {
+
+        margin:
+            20px 0;
+
+        padding-left: 0;
+
+        list-style: none;
+
+        display: grid;
+
+        gap: 10px;
+
+    }
+
+
+    .tp-list li {
+
+        padding:
+            14px 18px 14px 43px;
+
+        background:
+            rgba(255,255,255,.035);
+
+        border:
+            1px solid rgba(255,255,255,.055);
+
+        border-radius: 14px;
+
+        position: relative;
+
+        color: #b8c0cf;
+
+    }
+
+
+    .tp-list li::before {
+
+        content: "→";
+
+        position: absolute;
+
+        left: 17px;
+
+        color: #9f8cff;
+
+    }
+
+
+    .tp-list li:hover {
+
+        background:
+            rgba(139,92,246,.07);
+
+        border-color:
+            rgba(139,92,246,.2);
+
+        transform:
+            translateX(4px);
+
+        transition:
+            .25s ease;
+
+    }
+
+
+    /* ===============================================
+       CONNECTION
+       =============================================== */
+
+    .connection-arrow {
+
+        font-size: 24px;
+
+        color: #8b5cf6;
+
+        text-align: center;
+
+        margin:
+            10px 0;
+
+        text-shadow:
+            0 0 15px rgba(139,92,246,.5);
+
+    }
+
+
+    .connection-line {
+
+        padding:
+            20px;
+
+        margin:
+            15px 0;
+
+        text-align: center;
+
+        border:
+            1px dashed rgba(139,92,246,.25);
+
+        border-radius: 15px;
+
+        background:
+            rgba(139,92,246,.035);
+
+        color: #b9a7ff;
+
+    }
+
+
+    code {
+
+        background:
+            rgba(139,92,246,.12);
+
+        color:
+            #c4b5fd;
+
+        padding:
+            3px 7px;
+
+        border-radius: 6px;
+
+    }
+
+
+    /* ===============================================
+       END CARD
+       =============================================== */
+
+    .end-card {
+
+        margin:
+            30px 20px 5px;
+
+        padding:
+            35px;
+
+        border-radius:
+            22px;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 25px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(124,58,237,.12),
+                rgba(59,130,246,.06)
+            );
+
+        border:
+            1px solid rgba(139,92,246,.14);
+
+        overflow: hidden;
+
+        position: relative;
+
+    }
+
+
+    .end-orb {
+
+        width: 65px;
+
+        height: 65px;
+
+        flex-shrink: 0;
+
+        border-radius: 50%;
+
+        background:
+            radial-gradient(
+                circle,
+                #a78bfa,
+                #6d28d9 35%,
+                transparent 70%
+            );
+
+        box-shadow:
+            0 0 40px rgba(139,92,246,.35);
+
+        animation:
+            orbPulse 3s infinite;
+
+    }
+
+
+    @keyframes orbPulse {
+
+        50% {
+            transform: scale(1.08);
+            opacity: .8;
+        }
+
+    }
+
+
+    .end-label {
+
+        color: #8b96ab;
+
+        font-size: 10px;
+
+        font-weight: 800;
+
+        letter-spacing: 2px;
+
+    }
+
+
+    .end-card h3 {
+
+        margin:
+            6px 0;
+
+        font-size: 22px;
+
+        color: #f4f4f7;
+
+    }
+
+
+    .end-card p {
+
+        color: #7f8aa3;
+
+        font-size: 13px;
+
+    }
+
+
+    /* ===============================================
+       FOOTER
+       =============================================== */
+
+    footer {
+
+        padding:
+            35px 5px 0;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        color: #59647a;
+
+        font-size: 11px;
+
+        letter-spacing: .3px;
+
+    }
+
+
+    #status {
+
+        color: #77839a;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 7px;
+
+    }
+
+
+    .status-live {
+
+        width: 6px;
+
+        height: 6px;
+
+        border-radius: 50%;
+
+        background: #34d399;
+
+        box-shadow:
+            0 0 10px rgba(52,211,153,.7);
+
+    }
+
+
+    /* ===============================================
+       MOBILE
+       =============================================== */
+
+    @media(max-width:700px) {
+
+        .container {
+
+            width: 94%;
+
+            padding-top: 30px;
+
+        }
+
+
+        header {
+
+            display: block;
+
+            margin-bottom: 45px;
+
+        }
+
+
+        .tagline {
+
+            margin-top: 10px;
+
+        }
+
+
+        .hero {
+
+            padding: 38px 28px;
+
+            border-radius: 24px;
+
+        }
+
+
+        .hero h1 {
+
+            font-size: 58px;
+
+            letter-spacing: -3px;
+
+        }
+
+
+        article {
+
+            padding: 18px;
+
+            border-radius: 24px;
+
+        }
+
+
+        .edition-intro {
+
+            display: block;
+
+        }
+
+
+        .edition-intro p {
+
+            margin-top: 12px;
+
+        }
+
+
+        .timeline::before {
+
+            left: 28px;
+
+        }
+
+
+        .tp-section {
+
+            grid-template-columns:
+                48px 1fr;
+
+            gap: 12px;
+
+            padding:
+                25px 5px;
+
+        }
+
+
+        .section-number {
+
+            width: 38px;
+
+            height: 38px;
+
+        }
+
+
+        .section-label {
+
+            font-size: 19px;
+
+        }
+
+
+        .section-question {
+
+            font-size: 12px;
+
+        }
+
+
+        .section-content {
+
+            font-size: 14px;
+
+        }
+
+
+        .end-card {
+
+            margin:
+                20px 5px;
+
+            padding:
+                25px;
+
+        }
+
+
+        footer {
+
+            display: block;
+
+        }
+
+
+        #status {
+
+            margin-top: 8px;
+
+        }
+
+    }
+
+    `;
+
+
+    document.head.appendChild(style);
+
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+renderEdition(demoEdition);
