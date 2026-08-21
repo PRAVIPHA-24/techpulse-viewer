@@ -74,52 +74,19 @@ TECHPULSE approaches this differently by creating a \*\*continuous technology pu
 
 \## Architecture
 
+```mermaid
+flowchart TD
+    A[TECHPULSE UI<br/>HTML CSS JavaScript]
+    B[Amazon API Gateway]
+    C[AWS Lambda<br/>Python 3.12]
+    D[Amazon S3<br/>Latest Edition]
 
-
-```text
-
-&#x20;       ┌──────────────────────┐
-
-&#x20;       │     TECHPULSE UI     │
-
-&#x20;       │ HTML / CSS / JS      │
-
-&#x20;       └──────────┬───────────┘
-
-&#x20;                  │
-
-&#x20;                  ▼
-
-&#x20;       ┌──────────────────────┐
-
-&#x20;       │     API Gateway      │
-
-&#x20;       └──────────┬───────────┘
-
-&#x20;                  │
-
-&#x20;                  ▼
-
-&#x20;       ┌──────────────────────┐
-
-&#x20;       │     AWS Lambda       │
-
-&#x20;       │      Python 3.12     │
-
-&#x20;       └──────────┬───────────┘
-
-&#x20;                  │
-
-&#x20;                  ▼
-
-&#x20;       ┌──────────────────────┐
-
-&#x20;       │      Amazon S3       │
-
-&#x20;       │  Latest Edition Data │
-
-&#x20;       └──────────────────────┘
-
+    A --> B
+    B --> C
+    C --> D
+    D --> C
+    C --> B
+    B --> A
 ```
 
 
